@@ -89,39 +89,11 @@ jobs:
           
           echo "✓ Submission structure is valid"
       
-      - name: Checkout private agents (from secrets or protected branch)
+      - name: Setup private agents
         run: |
-          # Create private_agents directory
           mkdir -p private_agents
-          
-          # In production, you would fetch private agents from:
-          # 1. A separate private repository
-          # 2. GitHub Secrets
-          # 3. A protected branch
-          # 4. Encrypted files
-          
-          # For now, we'll check if they exist in a protected location
-          if [ -d "private_agents" ] && [ -f "private_agents/prey_agent.py" ] && [ -f "private_agents/predator_agent.py" ]; then
-            echo "✓ Private agents found"
-          else
-            echo "Warning: Private agents not found. You need to set these up separately."
-            echo "Creating placeholder private agents for testing..."
-            
-            # Create placeholder agents (REPLACE THIS IN PRODUCTION)
-            cat > private_agents/prey_agent.py << 'EOL'
-import numpy as np
-
-class StudentAgent:
-    def __init__(self, agent_type: str):
-        self.agent_type = agent_type
-    
-    def get_action(self, observation, agent_id: str):
-        # Placeholder: random action
-        return np.random.uniform(-1, 1, size=5)
-EOL
-            
-            cp private_agents/prey_agent.py private_agents/predator_agent.py
-          fi
+          echo "${{ secrets.PRIVATE_PREY_AGENT }}" | base64 -d > private_agents/prey_agent.py
+          echo "${{ secrets.PRIVATE_PREDATOR_AGENT }}" | base64 -d > private_agents/predator_agent.py
       
       - name: Run evaluation
         id: evaluate
