@@ -56,15 +56,9 @@ class AgentLoader:
 class SimpleTagEvaluator:
     """Evaluator for Simple Tag environment."""
     
-    def __init__(self, seed: int = 42):
-        """
-        Initialize evaluator.
-        
-        Args:
-            seed: Random seed for reproducibility
-        """
-        self.seed = seed
-        np.random.seed(seed)
+    def __init__(self):
+        """Initialize evaluator (no seeding)."""
+        pass
     
     def evaluate(
         self,
@@ -110,16 +104,15 @@ class SimpleTagEvaluator:
         predator_rewards = []
         
         for episode in range(num_episodes):
-            episode_seed = self.seed + episode
             env = simple_tag_v3.parallel_env(
                 num_good=1,  # Number of prey
                 num_adversaries=3,  # Number of predators
                 num_obstacles=2,
                 max_cycles=max_steps,
-                continuous_actions=True
+                continuous_actions=False
             )
             
-            observations, infos = env.reset(seed=episode_seed)
+            observations, infos = env.reset()
             
             # Initialize agents for this episode
             prey_agents = {}
@@ -179,8 +172,7 @@ class SimpleTagEvaluator:
             "prey_std": float(np.std(prey_rewards)),
             "predator_score": float(np.mean(predator_rewards)),
             "predator_std": float(np.std(predator_rewards)),
-            "num_episodes": num_episodes,
-            "seed": self.seed
+            "num_episodes": num_episodes
         }
         
         return results
@@ -190,7 +182,6 @@ def evaluate_submission(
     student_submission_dir: Path,
     private_agents_dir: Path,
     output_file: Path,
-    seed: int = 42,
     num_episodes: int = 100
 ) -> Dict[str, Any]:
     """
@@ -200,7 +191,6 @@ def evaluate_submission(
         student_submission_dir: Directory containing student's agent.py
         private_agents_dir: Directory containing private reference agents
         output_file: Path to save evaluation results
-        seed: Random seed
         num_episodes: Number of evaluation episodes
         
     Returns:
@@ -227,7 +217,7 @@ def evaluate_submission(
     print(f"Evaluating submission: {student_submission_dir.name}")
     print(f"{'='*60}\n")
     
-    evaluator = SimpleTagEvaluator(seed=seed)
+    evaluator = SimpleTagEvaluator()
     
     # Evaluate student as prey vs private predator
     print("\n--- Evaluating student PREY vs private PREDATOR ---")
@@ -261,8 +251,7 @@ def evaluate_submission(
         "prey_std": prey_results["prey_std"],
         "predator_score": predator_results["predator_score"],
         "predator_std": predator_results["predator_std"],
-        "num_episodes": num_episodes,
-        "seed": seed
+        "num_episodes": num_episodes
     }
     
     # Save results
@@ -304,12 +293,6 @@ def main():
         help="Path to save evaluation results"
     )
     parser.add_argument(
-        "--seed",
-        type=int,
-        default=42,
-        help="Random seed for evaluation"
-    )
-    parser.add_argument(
         "--episodes",
         type=int,
         default=100,
@@ -322,7 +305,6 @@ def main():
         student_submission_dir=args.submission_dir,
         private_agents_dir=args.private_agents_dir,
         output_file=args.output,
-        seed=args.seed,
         num_episodes=args.episodes
     )
     

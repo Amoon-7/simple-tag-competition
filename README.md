@@ -73,7 +73,6 @@ See `template/agent.py` for a complete template.
 ### Evaluation
 
 - Your agents are evaluated against **private reference implementations**
-- Seeds are set on the server side for reproducibility
 - Each PR triggers automatic evaluation via GitHub Actions
 - Results are published to the leaderboard immediately
 - **Note**: PRs are not merged - they are only used for evaluation

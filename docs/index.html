@@ -70,20 +70,71 @@
             margin-top: 5px;
         }
         
-        .content {
+        .leaderboard {
             padding: 40px;
-            text-align: center;
         }
         
-        .content h2 {
-            color: #2c3e50;
+        .leaderboard h2 {
             margin-bottom: 20px;
+            color: #2c3e50;
         }
         
-        .content p {
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        
+        th {
+            background: #667eea;
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.85em;
+            letter-spacing: 0.5px;
+        }
+        
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #dee2e6;
+        }
+        
+        tr:hover {
+            background: #f8f9fa;
+        }
+        
+        .rank {
+            font-weight: bold;
+            font-size: 1.2em;
+            color: #667eea;
+        }
+        
+        .rank-1 { color: #FFD700; }
+        .rank-2 { color: #C0C0C0; }
+        .rank-3 { color: #CD7F32; }
+        
+        .student-name {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        .score {
+            font-weight: 600;
+        }
+        
+        .score-positive {
+            color: #28a745;
+        }
+        
+        .score-negative {
+            color: #dc3545;
+        }
+        
+        .timestamp {
             color: #6c757d;
-            font-size: 1.1em;
-            margin: 10px 0;
+            font-size: 0.85em;
         }
         
         footer {
@@ -92,6 +143,28 @@
             background: #f8f9fa;
             color: #6c757d;
             font-size: 0.9em;
+        }
+        
+        .last-updated {
+            text-align: center;
+            padding: 20px;
+            color: #6c757d;
+            font-style: italic;
+        }
+        
+        @media (max-width: 768px) {
+            .stats {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            table {
+                font-size: 0.9em;
+            }
+            
+            th, td {
+                padding: 10px;
+            }
         }
     </style>
 </head>
@@ -104,27 +177,54 @@
         
         <div class="stats">
             <div class="stat">
-                <div class="stat-value">0</div>
+                <div class="stat-value">1</div>
                 <div class="stat-label">Total Submissions</div>
             </div>
             <div class="stat">
-                <div class="stat-value">0</div>
+                <div class="stat-value">1</div>
                 <div class="stat-label">Participants</div>
             </div>
             <div class="stat">
-                <div class="stat-value">0</div>
+                <div class="stat-value">3</div>
                 <div class="stat-label">Episodes Evaluated</div>
             </div>
         </div>
         
-        <div class="content">
-            <h2>No Submissions Yet</h2>
-            <p>Be the first to submit your agent!</p>
-            <p>Fork the repository, implement your agent, and submit a pull request.</p>
+        <div class="leaderboard">
+            <h2>Rankings</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Rank</th>
+                        <th>Student</th>
+                        <th>Combined Score</th>
+                        <th>Prey Score</th>
+                        <th>Predator Score</th>
+                        <th>Last Submission</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    <tr>
+                        <td class="rank-1">#1</td>
+                        <td class="student-name">template</td>
+                        <td class="score">-151.9804</td>
+                        <td class="score score-negative">-303.9609 ± 267.9419</td>
+                        <td class="score score-negative">0.0000 ± 0.0000</td>
+                        <td class="timestamp">2025-12-02 20:56</td>
+                    </tr>
+
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="last-updated">
+            Last updated: 2025-12-02 20:59:01 UTC
         </div>
         
         <footer>
-            <p>This leaderboard will update automatically when students submit their agents</p>
+            <p>Scores represent average rewards over 3 episodes</p>
+            <p>Combined score is the average of prey and predator scores</p>
         </footer>
     </div>
 </body>

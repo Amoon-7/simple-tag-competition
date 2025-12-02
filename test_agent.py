@@ -67,10 +67,10 @@ def test_agent(agent_file: Path, num_episodes: int = 5):
                 num_adversaries=3,
                 num_obstacles=2,
                 max_cycles=25,  # Short episodes for testing
-                continuous_actions=True
+                continuous_actions=False
             )
             
-            observations, infos = env.reset(seed=episode)
+            observations, infos = env.reset()
             
             # Track agents for this episode
             episode_agents = {}
@@ -99,7 +99,7 @@ def test_agent(agent_file: Path, num_episodes: int = 5):
                             return False
                     else:
                         # Random agent for opponents
-                        action = np.random.uniform(-1, 1, size=5)
+                        action = np.random.randint(0, 5)
                     
                     actions[agent_id] = action
                 

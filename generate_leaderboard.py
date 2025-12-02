@@ -6,7 +6,7 @@ This script reads all evaluation results and generates a leaderboard HTML page.
 
 import json
 from pathlib import Path
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import List, Dict, Any
 import sys
 
@@ -310,7 +310,7 @@ def generate_leaderboard_html(results: List[Dict[str, Any]], output_path: Path):
         </div>
         
         <div class="last-updated">
-            Last updated: {datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")} UTC
+            Last updated: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")} UTC
         </div>
         
         <footer>

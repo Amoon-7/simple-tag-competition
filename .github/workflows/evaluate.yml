@@ -101,9 +101,6 @@ jobs:
           submission_dir="${{ steps.submission.outputs.submission_dir }}"
           username="${{ steps.submission.outputs.username }}"
           
-          # Set a unique seed for this evaluation (based on PR number)
-          seed=$((42 + ${{ github.event.pull_request.number }}))
-          
           # Create results directory
           mkdir -p results
           
@@ -114,7 +111,6 @@ jobs:
             --submission-dir "$submission_dir" \
             --private-agents-dir "private_agents" \
             --output "$output_file" \
-            --seed $seed \
             --episodes 100
           
           echo "output_file=$output_file" >> $GITHUB_OUTPUT
