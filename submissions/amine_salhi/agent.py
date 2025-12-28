@@ -9,7 +9,6 @@ import numpy as np
 from pathlib import Path
 from collections import deque
 
-# --- Utilitaire d'initialisation ---
 def layer_init(layer, std=np.sqrt(2), bias_const=0.0):
     """Initialisation orthogonale"""
     torch.nn.init.orthogonal_(layer.weight, std)
@@ -65,7 +64,7 @@ class StudentAgent:
             try:
                 checkpoint = torch.load(model_path, map_location='cpu')
                 self.actor.load_state_dict(checkpoint["actor_state_dict"])
-                print(f"✓ Loaded trained predator model from {model_path}")
+                print(f"Loaded trained predator model from {model_path}")
             except Exception as e:
                 print(f"Warning: Could not load model weights: {e}")
         else:
