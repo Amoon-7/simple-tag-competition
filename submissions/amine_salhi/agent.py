@@ -8,14 +8,18 @@ import torch.nn.functional as F
 import numpy as np
 from pathlib import Path
 from collections import deque
+from pettingzoo.mpe import simple_tag_v3
+import importlib.util
 
+# Initialisation orthogonale des couches
 def layer_init(layer, std=np.sqrt(2), bias_const=0.0):
     """Initialisation orthogonale"""
     torch.nn.init.orthogonal_(layer.weight, std)
     torch.nn.init.constant_(layer.bias, bias_const)
     return layer
 
-# --- Actor Network (Policy) ---
+# L'implémentation du PPO utilisée ici est basé sur celle vu en tps RL.
+# Actor Network (Policy)
 class Actor(nn.Module):
     def __init__(self, state_dim, action_dim, hidden_size=128):
         super(Actor, self).__init__()
@@ -30,7 +34,7 @@ class Actor(nn.Module):
     def forward(self, state):
         return self.network(state)
 
-# --- Critic Network (Value) ---
+# Critic Network (Value) 
 class Critic(nn.Module):
     def __init__(self, state_dim, hidden_size=128):
         super(Critic, self).__init__()
@@ -45,6 +49,7 @@ class Critic(nn.Module):
     def forward(self, state):
         return self.network(state)
 
+# Template de l'agent prédateur implémenté via PPO
 class StudentAgent:
     """Agent prédateur entraîné via PPO pour l'évaluation."""
     
@@ -78,7 +83,7 @@ class StudentAgent:
             action = torch.argmax(logits, dim=1).item()
         return action
 
-# --- PPO Trainer ---
+# PPO Trainer: a class to handle training
 class PPOTrainer:
     def __init__(
         self,
@@ -108,8 +113,8 @@ class PPOTrainer:
         self.states, self.actions, self.log_probs = [], [], []
         self.rewards, self.values, self.dones = [], [], []
     
+    # Sélection d'action
     def select_action(self, state):
-        """Sélectionne une action et stocke les données pour l'apprentissage."""
         state_tensor = torch.FloatTensor(state).unsqueeze(0)
         with torch.no_grad():
             logits = self.actor(state_tensor)
@@ -187,11 +192,8 @@ class PPOTrainer:
         self.states, self.actions, self.log_probs = [], [], []
         self.rewards, self.values, self.dones = [], [], []
 
+# Entraînement des prédateurs avec PPO et Reward Shaping
 def train_predators(prey_agent_path, num_episodes=10000, max_steps=25, save_path="predator_model.pth", print_every=100):
-    """Fonction principale d'entraînement avec Reward Shaping."""
-    from pettingzoo.mpe import simple_tag_v3
-    import importlib.util
-    
     # Chargement de la proie
     spec = importlib.util.spec_from_file_location("prey_module", prey_agent_path)
     prey_module = importlib.util.module_from_spec(spec)
@@ -217,7 +219,7 @@ def train_predators(prey_agent_path, num_episodes=10000, max_steps=25, save_path
             elif 'adversary' in agent_name:
                 action = trainer.select_action(observation)
                 
-                # REWARD SHAPING : Aide les prédateurs à trouver la proie
+                # Le REWARD SHAPING sert à encourager la proximité avec la proie
                 
                 prey_rel_pos = observation[2:4]
                 dist = np.linalg.norm(prey_rel_pos)
